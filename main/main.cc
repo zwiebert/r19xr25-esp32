@@ -1,6 +1,6 @@
 // main.cc
 #include "FrameProcessor.hh"
-#include "UsbTransport.hh"
+#include "SppTransport.hh"
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -44,6 +44,10 @@ extern "C" int app_main()
     
     test2(processor);
 
+    SppTransport spp;
+    spp.start([&processor](auto data){ processor.feedBytes(data); });
+
+
     #if 0
     UsbTransport usb;
 
@@ -54,8 +58,10 @@ extern "C" int app_main()
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 
-    usb.stop();
+    spp.stop();
     #endif
+
+    spp.stop();
     return 0;
 }
 

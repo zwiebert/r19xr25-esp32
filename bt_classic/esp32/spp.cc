@@ -75,7 +75,7 @@ static void spp_read_handle(void* param) {
   for (;;) {
     /* The frequency of calling this function also limits the speed at which the
      * peer device can send data. */
-    size = read(fd, spp_data, SPP_DATA_LEN);
+    size = read(fd, spp_data, SPP_DATA_LEN - 1);
     if (size < 0) {
       break;
     } else if (size == 0) {
@@ -83,6 +83,7 @@ static void spp_read_handle(void* param) {
       vTaskDelay(500 / portTICK_PERIOD_MS);
     } else {
       if (!our_rcb) goto done;
+      spp_data[size] = 0; // append zero. if data contains no zeros, its now a null terminated string.
       const auto reply_len =
           our_rcb((char*)spp_data, size, SPP_DATA_LEN, spp_read_status);
       spp_read_status.reset(spp::JUST_CONNECTED);

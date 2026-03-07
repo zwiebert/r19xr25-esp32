@@ -10,15 +10,20 @@ using status_t = std::bitset<16>;
 
 /**
  * @brief this callback is called periodically to get data to write to remote client
+ * @param dst          the data buffer
+ * @param dst_size     the size of dst
+ * @param status       status bit reference
+ * @returns            like snprintf(). data bytes written. if greater than dst_size, data was only partial written
  *
  */
 typedef int (*spp_write_cb_t)(char* dst, std::size_t dst_size,
                               spp::status_t& status);
 /**
  * @brief this callback is called when data was read from remote client
- * @param src_dst      the data buffer
+ * @param src_dst      the data buffer. in src, the valid data is followed by a zero byte. in dst this is not required.
  * @param src_len      number of bytes received
  * @param dst_size     the size of src_dst usable for holding the reply data
+ * @param status       status bit reference
  * 
  * @returns            byte length of reply (0..dst_size)
  *

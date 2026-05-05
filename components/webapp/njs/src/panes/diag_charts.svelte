@@ -10,7 +10,7 @@
   import DropFile from "../components/request-or-drop-file.svelte";
   import { x53b_740_chart } from "../cardiag/charts/x53b-740.svelte";
   import { raw_chart } from "../cardiag/charts/raw.svelte";
-  import type { Icar_chart, Icar_chart_static, ILabel } from "../cardiag/charts/iface";
+  import type { Icar_chart, Icar_chart_static, ILabel, CarMetrics } from "../cardiag/charts/iface";
   //import { byte_unstuffing } from "../cardiag/byte_unstuffing";
   import { RenixDestuffer } from "../cardiag/renix_destuffer";
   import { EnableGitHubSamples } from "../store/app_state";
@@ -181,6 +181,15 @@
   let showChartEditor = $state(false);
   let selectOrderIdx = $state(0);
   let selectUnusedMetricsIdx = $state(0);
+  function oIdx2cm(i: number): number {
+    return car_metrics[car_chart.order[i]];
+  }
+  function cm2txt(cm: CarMetrics): string {
+    let res = "";
+    if (cm.k) res += `#${cm.k} `;
+    res += cm.name;
+    return res;
+  }
 </script>
 
 {#snippet header()}
@@ -199,8 +208,7 @@
         {#each car_metrics as cm, i}
           {#if !car_chart.order.includes(i)}
             <option value={i}>
-              {i}
-              {cm.name}
+              {cm2txt(cm)}
             </option>
           {/if}
         {/each}
@@ -252,8 +260,7 @@
       <select size={car_metrics.length} bind:value={selectOrderIdx}>
         {#each car_chart.order as cmi, i}
           <option value={i}>
-            {cmi}
-            {car_metrics[cmi].name}
+            {cm2txt(car_metrics[cmi])}
           </option>
         {/each}
       </select>
@@ -349,7 +356,9 @@
             <div class="flex flex-col text-left">
               {#each Array.from({ length: Math.floor(nmbGraphs / 2) }, (_, index) => index * 2) as i}
                 <div>
-                  <label use:tippy={{ content: "1: " + car_metrics[car_chart.order[i]].name + ", 2: " + car_metrics[car_chart.order[i+1]].name  }} ><input type="checkbox" bind:checked={yn_show[i]} />{car_chart.labels[i]?.series_label}, {car_chart.labels[i + 1]?.series_label}</label>
+                  <label use:tippy={{ content: "1: " + cm2txt(oIdx2cm(i)) + ", 2: " + cm2txt(oIdx2cm(i + 1)) }}
+                    ><input type="checkbox" bind:checked={yn_show[i]} />{car_chart.labels[i]?.series_label}, {car_chart.labels[i + 1]?.series_label}</label
+                  >
                   {#if car_chart.labels[i]?.axis_label === "bits" || car_chart.labels[i]?.axis_label === "raw"}
                     <label><input type="checkbox" bind:checked={yn_show_as_bits[i]} />bits</label>
                   {/if}

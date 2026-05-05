@@ -280,7 +280,7 @@
         <div class="mx-auto w-fit pointer-events-auto bg-amber-50 p-2" class:shadow-xl={$stickChartControls}>
           <div class="flex flex-row items-center">
             <div class="flex flex-col">
-            <h5 class="m-0 p-0">Data Sources</h5>
+              <h5 class="m-0 p-0">Data Sources</h5>
               <label><input type="checkbox" bind:checked={$EnableGitHubSamples} />GitHub Data Files</label>
               {#if $EnableGitHubSamples}
                 {#await getGithubSamples()}
@@ -337,7 +337,7 @@
                   }}
                 >
                   {#each car_charts as cc}
-                    <option value={cc}>{cc.get_info().name}</option>
+                    <option use:tippy={{ content: cc.get_info().description }} value={cc}>{cc.get_info().name}</option>
                   {/each}
                 </select>
               </div>
@@ -345,10 +345,11 @@
               <label>W<input type="number" bind:value={width} min={400} max={5000} step={100} /></label>
               <label>H<input type="number" bind:value={height} min={100} max={1000} step={25} /></label>
             </div>
+            <!-- Enable/Disable graphs by checkboxes -->
             <div class="flex flex-col text-left">
               {#each Array.from({ length: Math.floor(nmbGraphs / 2) }, (_, index) => index * 2) as i}
                 <div>
-                  <label><input type="checkbox" bind:checked={yn_show[i]} />{car_chart.labels[i]?.series_label}, {car_chart.labels[i + 1]?.series_label}</label>
+                  <label use:tippy={{ content: "1: " + car_metrics[car_chart.order[i]].name + ", 2: " + car_metrics[car_chart.order[i+1]].name  }} ><input type="checkbox" bind:checked={yn_show[i]} />{car_chart.labels[i]?.series_label}, {car_chart.labels[i + 1]?.series_label}</label>
                   {#if car_chart.labels[i]?.axis_label === "bits" || car_chart.labels[i]?.axis_label === "raw"}
                     <label><input type="checkbox" bind:checked={yn_show_as_bits[i]} />bits</label>
                   {/if}
@@ -361,6 +362,7 @@
           {/if}
         </div>
       </div>
+      <!-- Display value-charts with 2 graphs per chart. Bit-Charts have 8 graphs per chart (XXX) -->
       {#if x_arr.length > 0}
         {#each Array.from({ length: Math.floor(nmbGraphs / 2) }, (_, index) => index * 2) as i}
           <div class="text-left">

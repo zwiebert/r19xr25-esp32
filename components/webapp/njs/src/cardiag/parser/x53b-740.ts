@@ -250,14 +250,14 @@ export const x53b_740_metrics_table: Array<CarMetrics> = [
   { k: 0, parse: P.get_unknown_xx, name: "unknown byte xx", unit: "???", range: [0, 255], short_name: "?byteXx" },
   { k: 0, parse: P.get_engine_speed_target_RPM, name: "Target Engine Speed", unit: "RPM", range: [0, 2550], short_name: "?TgtRPM" },
   { k: 0, parse: P.get_engine_speed_deviation_RPM, name: "Engine Speed Deviation", unit: "RPM", range: [-128, 128], short_name: "?DevRPM" },
-  { k: 0, parse: P.get_status0, name: "status byte 0: input switches", unit: "bits", range: [0, 255], short_name: "sb0" },
-  { k: 0, parse: P.get_status1, name: "status byte 1: input switches", unit: "bits", range: [0, 255], short_name: "sb1" },
-  { k: 0, parse: P.get_status2, name: "status byte 2: input switches", unit: "bits", range: [0, 255], short_name: "sb2" },
-  { k: 0, parse: P.get_status3, name: "status byte 3: input switches", unit: "bits", range: [0, 255], short_name: "sb3" },
-  { k: 0, parse: P.get_status4, name: "status byte 4: input switches", unit: "bits", range: [0, 255], short_name: "sb4" },
-  { k: 0, parse: P.get_status5, name: "status byte 5: input switches", unit: "bits", range: [0, 255], short_name: "sb5" },
-  { k: 0, parse: P.get_status6, name: "status byte 6: input switches", unit: "bits", range: [0, 255], short_name: "sb6" },
-  { k: 0, parse: P.get_status7, name: "status byte 7: input switches", unit: "bits", range: [0, 255], short_name: "sb7" },
+  { k: 0, parse: P.get_status0, name: "status byte 0: input switches (idle, wot)", unit: "bits", range: [0, 255], short_name: "sb0" },
+  { k: 0, parse: P.get_status1, name: "status byte 1: ", unit: "bits", range: [0, 255], short_name: "sb1" },
+  { k: 0, parse: P.get_status2, name: "status byte 2: Idle control?", unit: "bits", range: [0, 255], short_name: "sb2" },
+  { k: 0, parse: P.get_status3, name: "status byte 3: enrichment/purge/egr?", unit: "bits", range: [0, 255], short_name: "sb3" },
+  { k: 0, parse: P.get_status4, name: "status byte 4: error?, rich-lean at 0?", unit: "bits", range: [0, 255], short_name: "sb4" },
+  { k: 0, parse: P.get_status5, name: "status byte 5: ", unit: "bits", range: [0, 255], short_name: "sb5" },
+  { k: 0, parse: P.get_status6, name: "status byte 6 fuel-pump: ", unit: "bits", range: [0, 255], short_name: "sb6" },
+  { k: 0, parse: P.get_status7, name: "status byte 7: ", unit: "bits", range: [0, 255], short_name: "sb7" },
 ];
 /* eslint-enable @typescript-eslint/unbound-method */
 export default x53b_740_parser;

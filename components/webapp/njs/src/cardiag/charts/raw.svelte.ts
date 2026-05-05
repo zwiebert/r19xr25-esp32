@@ -13,7 +13,7 @@ export class raw_chart implements Icar_chart,Icar_chart_static {
 
   private yn_arr: (number | boolean)[][] = Array.from({ length: 64 }, () => []);
   static get_info() {
-    return { name: "Raw", description: "shows all bytes of the frame as graphs." };
+    return { name: "Raw", description: "Generic. Show each data-packet-byte as a 0...255 graph" };
   }
   clear_chart_data() {
     this.yn_arr = Array.from({ length: 64 }, () => []);

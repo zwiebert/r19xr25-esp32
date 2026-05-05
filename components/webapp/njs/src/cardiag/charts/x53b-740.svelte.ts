@@ -64,7 +64,7 @@ export class x53b_740_chart implements Icar_chart, Icar_chart_static {
   }) as ILabel[];
 
   static get_info() {
-    return { name: "X53B_740", description: "this is the R19-F3N740 (54kW, TBI, manual)" };
+    return { name: "X53B_740", description: "Model R19-F3N740 (54kW, TBI, manual)" };
   }
 
   clear_chart_data() {

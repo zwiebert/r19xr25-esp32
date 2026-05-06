@@ -58,7 +58,17 @@ export class x53b_740_parser {
   }
 
   get_manifold_absolute_pressure_mBar() {
-    return int(this.X(idx_t.MAP) / 9.13 + 3.1 ) * 33.864;
+    /*
+      MAP Formula:  byte * 3.1 + 220
+      Measurements at 1007 mBar atmospheric pressure:
+      inHg-Vacuum / Byte-Value
+      0 / FE
+      5 / B2
+      10/ 85
+      15/ 55
+      20/ 20
+    */
+    return int(this.X(idx_t.MAP) * 3.1 + 220);
   }
 
   get_engine_coolant_temperature_Celsius() {
@@ -117,14 +127,14 @@ export class x53b_740_parser {
     return int(this.X(idx_t.unknown_xx));
   }
   get_engine_speed_target_RPM() {
-    const num = (this.X(idx_t.unknown_xx) << 8);
+    const num = this.X(idx_t.unknown_xx) << 8;
     return num == 0 ? 0 : int(30000000 / num);
     //return int(this.X(idx_t.unknown_xx)) << 8;
   }
 
   get_engine_speed_deviation_RPM() {
-    return int(this.X(idx_t.unknown_xx)) -  128;
-   //return this.get_engine_speed_RPM() - this.get_engine_speed_target_RPM();
+    return int(this.X(idx_t.unknown_xx)) - 128;
+    //return this.get_engine_speed_RPM() - this.get_engine_speed_target_RPM();
   }
 
   get_idle_period() {

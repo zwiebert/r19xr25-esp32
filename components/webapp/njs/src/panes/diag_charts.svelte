@@ -95,9 +95,15 @@
 
   function load_data(data: Uint8Array, name = "") {
     live_simulation(false);
-    diag_data = data;
+    if (isHexContent(data)) {
+      console.log("hex-content detected");
+      diag_data = hexToBinary(data);
+      console.log(diag_data);
+    } else {
+      diag_data = data;
+    }
     diag_data_name = name;
-    process_data(data, car_chart, false);
+    process_data(diag_data, car_chart, false);
     ++yn_arr_version_counter;
     ++x_arr_version_counter;
   }
@@ -171,6 +177,58 @@
   }
 
   //startTimer();
+  export function hexToBinary(data: Uint8Array): Uint8Array {
+    const result = new Uint8Array(data.length);
+    let resultIndex = 0;
+    let currentByteHex = ""; // Use a small string to collect chars between spaces
+
+    const start = data[0] === 0x9a ? 1 : 0;
+
+    for (let i = start; i < data.length; i++) {
+      const char = String.fromCharCode(data[i]);
+
+      // If we hit a space or newline, process what we have and RESET
+      if (/\s/.test(char)) {
+        if (currentByteHex.length > 0) {
+          // Parse whatever we found (handles "A" as 0x0A or "AA" as 0xAA)
+          result[resultIndex++] = parseInt(currentByteHex, 16);
+          currentByteHex = ""; // <--- This RE-SYNCS the alignment
+        }
+        continue;
+      }
+
+      // Accumulate valid hex chars
+      if (/[0-9a-fA-F]/.test(char)) {
+        currentByteHex += char;
+
+        // If we have 2 chars, we can optionally auto-commit,
+        // but waiting for the space is safer for "dirty" data.
+        if (currentByteHex.length === 2) {
+          result[resultIndex++] = parseInt(currentByteHex, 16);
+          currentByteHex = "";
+        }
+      }
+    }
+
+    return result.slice(0, resultIndex);
+  }
+  /**
+   * Heuristic to detect if a Uint8Array contains Hex text
+   * instead of raw binary.
+   */
+  export function isHexContent(data: Uint8Array): boolean {
+    // Check the first 50 bytes (or total length)
+    const sampleSize = Math.min(data.length, 50);
+
+    for (let i = 2; i < sampleSize; i++) {
+      const byte = data[i];
+      // Check if byte is 0-9 (48-57), A-F (65-70), a-f (97-102), or whitespace/colon
+      const isHexChar = (byte >= 48 && byte <= 57) || (byte >= 65 && byte <= 70) || (byte >= 97 && byte <= 102) || [10, 13, 32, 58].includes(byte); // \n, \r, space, :
+
+      if (!isHexChar) return false;
+    }
+    return true;
+  }
 
   /**
    *  @brief generate chart data from binary input

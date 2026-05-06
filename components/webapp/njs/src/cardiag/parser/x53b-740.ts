@@ -58,7 +58,7 @@ export class x53b_740_parser {
   }
 
   get_manifold_absolute_pressure_mBar() {
-    return int(this.X(idx_t.MAP) * 3.697 + 103.0);
+    return int(this.X(idx_t.MAP) / 9.13 + 3.1 ) * 33.864;
   }
 
   get_engine_coolant_temperature_Celsius() {

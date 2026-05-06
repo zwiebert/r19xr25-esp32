@@ -3,7 +3,9 @@
  * Processes raw UART bytes, handles byte stuffing, and extracts 30-byte packets.
  */
 export class RenixDestuffer {
-  private buffer = new Uint8Array(256); // Working buffer for one packet
+  static PACKET_MAX_SIZE = 64; // cannot store larger packets
+  static PACKET_MIN_SIZE = 30; // reject smaller packets
+  private packetBuffer = new Uint8Array(RenixDestuffer.PACKET_MAX_SIZE); // Working buffer for one packet
   private writeIndex = 0;
   private packetCount = 0;
   private lastWas255 = false;
@@ -20,6 +22,12 @@ export class RenixDestuffer {
     for (let i = 0; i < chunk.length; i++) {
       const currentByte = chunk[i];
 
+      if (this.writeIndex >= RenixDestuffer.PACKET_MAX_SIZE) {
+        this.writeIndex = 0;
+        this.lastWas255 = false;
+        return; // malformatted input data
+      }
+
       if (this.lastWas255) {
         if (currentByte === 255) {
           // Rule 1: 255, 255 is a STUFFED DATA BYTE
@@ -28,7 +36,7 @@ export class RenixDestuffer {
         } else {
           // Rule 2: 255 followed by [Not 255] is the FRAME DELIMITER.
           // The currentByte is the START BYTE (0) of the NEW packet.
-          this.finalizePacket();
+          if (this.writeIndex >= RenixDestuffer.PACKET_MIN_SIZE) this.finalizePacket();
 
           // Reset for new packet and start with the byte that followed the delimiter
           this.writeIndex = 0;
@@ -46,18 +54,14 @@ export class RenixDestuffer {
   }
 
   private appendToPacket(byte: number): void {
-    if (this.writeIndex < this.buffer.length) {
-      this.buffer[this.writeIndex++] = byte;
+    if (this.writeIndex < this.packetBuffer.length) {
+      this.packetBuffer[this.writeIndex++] = byte;
     }
   }
 
   private finalizePacket(): void {
-    // Standard Renix 2.5L packets are 30 bytes long including the 0 start byte
-    if (this.writeIndex === 30 && this.buffer[0] === 0) {
-      this.packetCount++;
-      // Return a copy/slice of the valid packet
-      this.onPacket(this.buffer.slice(0, 30), this.packetCount);
-    }
-    // Note: If writeIndex is not 30, it was likely a malformed/partial frame
+    this.packetCount++;
+    //this.onPacket(this.packetBuffer.slice(0, this.writeIndex - 1), this.packetCount);
+    this.onPacket(this.packetBuffer.subarray(0, this.writeIndex - 1), this.packetCount);
   }
 }

@@ -17,6 +17,7 @@
   import { getGithubSamples } from "../sample_data/github_samples";
   //import { DiagDataBuffer } from "../store/diag-data";
   import { fetchBinaryData } from "../download";
+  import { tooltip } from "../tooltip";
 
   let { chart_index = 0, chart_index_viewed = 0 } = $props();
 
@@ -57,7 +58,7 @@
 
   let error = $state(null);
 
-  const car_metrics = $derived(car_chart.get_car_metrics());
+  const car_metrics = $derived(car_chart?.get_car_metrics());
 
   let yn_show = $state(
     Array(64)
@@ -73,6 +74,17 @@
   let width = $state(typeof window !== "undefined" ? window.innerWidth - 10 : 1000);
   let height = $state(300);
   let win_innerWidth = $state(typeof window !== "undefined" ? window.innerWidth : 1000);
+
+  const toolTips = $derived.by(() => {
+    const res: string[] = [];
+    if (!car_metrics) return res;
+    for (const cm of car_metrics) {
+      const tt = cm2txt(cm);
+      res.push(tt);
+    }
+    console.log("toolTips", res);
+    return res;
+  });
 
   $effect(() => {
     //car_chart.clear_chart_data();
@@ -174,26 +186,37 @@
 
   const diag_charts = {
     tt: {
-      h3: "Hotkeys: 1,2,3,4,Tab: Change chart page." + "c: make chart controls visible when scrolling",
+      h3:
+        "<ul> <lh>Hotkeys:</lh>" + //
+        "<li>1,2,3,4,Tab: Change chart page. </li>" +
+        "<li>c: make chart controls visible when scrolling</li>" +
+        "</ul>",
     },
   };
 
   let showChartEditor = $state(false);
   let selectOrderIdx = $state(0);
   let selectUnusedMetricsIdx = $state(0);
-  function oIdx2cm(i: number): number {
-    return car_metrics[car_chart.order[i]];
+  function oIdx2cmi(i: number): number {
+    const cmi = car_chart.order[i];
+    if (cmi >= car_metrics.length) return undefined;
+    return cmi;
+  }
+  function oIdx2cm(i: number): CarMetrics {
+    const cmi = car_chart.order[i];
+    if (cmi >= car_metrics.length) return undefined;
+    return car_metrics[cmi];
   }
   function cm2txt(cm: CarMetrics): string {
     let res = "";
-    if (cm.k) res += `#${cm.k} `;
-    res += cm.name;
+    if (cm?.k) res += `#${cm.k} `;
+    res += cm?.name;
     return res;
   }
 </script>
 
 {#snippet header()}
-  <h3 class="w-screen mx-0 pointer-events-auto" use:tippy={{ content: diag_charts.tt.h3 }}>{chart_index + 1} : {diag_data_name}</h3>
+  <h3 class="w-screen mx-0 pointer-events-auto" use:tippy={{ content: diag_charts.tt.h3, allowHTML: true }}>{chart_index + 1} : {diag_data_name}</h3>
 {/snippet}
 
 <svelte:window bind:innerWidth={win_innerWidth} onresize={() => (width = window.innerWidth - 10)} />
@@ -356,7 +379,7 @@
             <div class="flex flex-col text-left">
               {#each Array.from({ length: Math.floor(nmbGraphs / 2) }, (_, index) => index * 2) as i}
                 <div>
-                  <label use:tippy={{ content: "1: " + cm2txt(oIdx2cm(i)) + ", 2: " + cm2txt(oIdx2cm(i + 1)) }}
+                  <label use:tooltip={{ content: "y1: " + toolTips[oIdx2cmi(i)] + "<br>y2: " + toolTips[oIdx2cmi(i + 1)], allowHTML: true }}
                     ><input type="checkbox" bind:checked={yn_show[i]} />{car_chart.labels[i]?.series_label}, {car_chart.labels[i + 1]?.series_label}</label
                   >
                   {#if car_chart.labels[i]?.axis_label === "bits" || car_chart.labels[i]?.axis_label === "raw"}

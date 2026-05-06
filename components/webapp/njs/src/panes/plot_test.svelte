@@ -153,7 +153,7 @@
   });
 
   $effect(() => {
-    console.log("create new uplot chart");
+    //console.log("create new uplot chart");
     chart?.destroy();
     chart = new uPlot(
       options,
@@ -175,7 +175,7 @@
     });
   });
   $effect(() => {
-    console.log("setScale-x");
+    //console.log("setScale-x");
     setScaleX_trigger;
     untrack(() => {
       // 1. Calculate how much the data moved (e.g., how many seconds/indices)
@@ -199,7 +199,7 @@
   });
 
   $effect(() => {
-    console.log("setScale-x-live");
+    //console.log("setScale-x-live");
     if (is_live && chart) {
       chart.setScale("x", {
         min: 0,
@@ -214,7 +214,7 @@
   });
 
   $effect(() => {
-    console.log("setSize");
+    //console.log("setSize");
     if (width && height) chart?.setSize({ width, height });
   });
 </script>

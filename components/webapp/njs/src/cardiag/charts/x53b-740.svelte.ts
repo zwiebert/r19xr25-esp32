@@ -1,5 +1,5 @@
 import { x53b_740_parser, x53b_740_metrics_table, x53b_740_metrics_table_pos } from "../parser/x53b-740";
-import type { CarMetrics, Icar_chart_static, Icar_chart, ILabel } from "./iface";
+import type { CarMetrics, Icar_chart_static, Icar_chart, ILabel, IModelInfo } from "./iface";
 export type { Icar_chart, ILabel };
 
 const t = x53b_740_metrics_table;
@@ -48,7 +48,7 @@ const default_order = [
   e.status7,
 ];
 
-export class x53b_740_chart implements Icar_chart, Icar_chart_static {
+export class x53b_740_chart implements Icar_chart {
   private yn_all_arr: (number | boolean)[][] = $state.raw(Array.from({ length: t.length }, () => []));
   public order = $state(default_order);
   public nmbGraphs: number = $derived(this.order.length);
@@ -63,7 +63,7 @@ export class x53b_740_chart implements Icar_chart, Icar_chart_static {
     return labels;
   }) as ILabel[];
 
-  static get_info() {
+  public static get_info(): IModelInfo {
     return { name: "X53B_740", description: "Model R19-F3N740 (54kW, TBI, manual)" };
   }
 
@@ -93,13 +93,6 @@ export class x53b_740_chart implements Icar_chart, Icar_chart_static {
   get_car_metrics(): Array<CarMetrics> {
     return [...x53b_740_metrics_table];
   }
-  get_order(): number[] {
-    return this.order;
-  }
-  set_order(order: number[]): void {
-    this.order.length = 0; // Clear contents
-    this.order.push(...order); // Append new contents
-  }
 
   process_data_packet(arr: Uint8Array, ct: number) {
     const m = new x53b_740_parser(arr);
@@ -113,3 +106,5 @@ export class x53b_740_chart implements Icar_chart, Icar_chart_static {
 export function x53b_740_chart_factory() {
   return new x53b_740_chart() as Icar_chart;
 }
+
+x53b_740_chart satisfies Icar_chart_static;

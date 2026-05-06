@@ -17,9 +17,6 @@ export interface Icar_chart {
   get_label(n: number): ILabel;
   get_nmb_of_graphs(): number;
   get_car_metrics(): Array<CarMetrics>;
-  get_order(): number[];
-  set_order(order: number[]): void;
-
   /**
    *
    * @param arr  a bunch of data frames in bendix bytestuffing format

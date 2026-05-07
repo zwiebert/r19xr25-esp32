@@ -1,7 +1,7 @@
 <script lang="ts">
   "use strict";
   import { _ } from "../services/i18n";
-  import tippy from "sveltejs-tippy";
+  import { tooltip } from "../tooltip";
   import { McuConfig, McuConfigKeys } from "../store/mcu_config.js";
   import { McuDocs_cliHelpConfig } from "../store/mcu_docs.js";
   import * as appDebug from "../app/app_debug.js";
@@ -221,12 +221,12 @@
 </div>
 {#if tabIdxMcc === 0}
   {#if mcuConfigKeysNetwork.length > 0}
-    <h4 class="text-center" use:tippy={{ content: $_("panes.network.tt.header") }}>{$_("panes.network.header")}</h4>
+    <h4 class="text-center" use:tooltip={{ content: $_("panes.network.tt.header") }}>{$_("panes.network.header")}</h4>
     <table class="conf-table top_table rounded-xl overflow-hidden">
       <tbody>
         {#each mcuConfigKeysNetwork as key, i}
           <tr>
-            <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+            <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
               ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}">{mcuConfigNames[key]}</label
               ></td
             >
@@ -253,7 +253,7 @@
           <tbody>
             {#each mcuConfigKeysLAN as key, i}
               <tr>
-                <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+                <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
                   ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}"
                     >{mcuConfigNames[key]}</label
                   ></td
@@ -288,7 +288,7 @@
             <tbody>
               {#each mcuConfigKeysWLAN as key, i}
                 <tr>
-                  <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+                  <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
                     ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}"
                       >{mcuConfigNames[key]}</label
                     ></td
@@ -314,7 +314,7 @@
             <tbody>
               {#each mcuConfigKeysNTP as key, i}
                 <tr>
-                  <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+                  <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
                     ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}"
                       >{mcuConfigNames[key]}</label
                     ></td
@@ -340,7 +340,7 @@
             <tbody>
               {#each mcuConfigKeysMQTT as key, i}
                 <tr>
-                  <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+                  <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
                     ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}"
                       >{mcuConfigNames[key]}</label
                     ></td
@@ -367,7 +367,7 @@
             <tbody>
               {#each mcuConfigKeysHTTP as key, i}
                 <tr>
-                  <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+                  <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
                     ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}"
                       >{mcuConfigNames[key]}</label
                     ></td
@@ -389,7 +389,7 @@
     {/if}
   {/if}
 {:else if tabIdxMcc === 1}
-  <h4 class="text-center" use:tippy={{ content: $_("panes.misc.tt.header") }}>{$_("panes.misc.header")}</h4>
+  <h4 class="text-center" use:tooltip={{ content: $_("panes.misc.tt.header") }}>{$_("panes.misc.header")}</h4>
 
   {#if mcuConfigKeysTime.length > 0}
     <div class="area">
@@ -397,7 +397,7 @@
         <tbody>
           {#each mcuConfigKeysTime as key, i}
             <tr>
-              <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+              <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
                 ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}"
                   >{mcuConfigNames[key]}</label
                 ></td
@@ -421,7 +421,7 @@
       <tbody>
         {#each mcuConfigKeysMisc as key, i}
           <tr>
-            <td use:tippy={{ content: $McuDocs_cliHelpConfig[key] }}
+            <td use:tooltip={{ content: $McuDocs_cliHelpConfig[key] }}
               ><label class="config-label {hasKeyEdited(key, mcuConfig[key], $McuConfig[key]) ? 'font-bold' : ''}" for="cfg_{key}">{mcuConfigNames[key]}</label
               ></td
             >

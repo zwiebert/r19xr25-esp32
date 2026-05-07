@@ -1,6 +1,5 @@
 <script lang="ts">
   /* eslint-disable svelte/require-each-key */
-  import tippy from "sveltejs-tippy";
   import uPlot from "uplot";
   import { stickChartControls } from "../store/app_state";
   import "uplot/dist/uPlot.min.css";
@@ -269,7 +268,7 @@
 </script>
 
 {#snippet header()}
-  <h3 class="w-screen mx-0 pointer-events-auto" use:tippy={{ content: diag_charts.tt.h3, allowHTML: true }}>{chart_index + 1} : {diag_data_name}</h3>
+  <h3 class="w-screen mx-0 pointer-events-auto" use:tooltip={{ content: diag_charts.tt.h3, allowHTML: true }}>{chart_index + 1} : {diag_data_name}</h3>
 {/snippet}
 
 {#snippet bit_chart(idx: number)}
@@ -456,7 +455,7 @@
                   }}
                 >
                   {#each car_charts as cc}
-                    <option use:tippy={{ content: cc.get_info().description }} value={cc}>{cc.get_info().name}</option>
+                    <option use:tooltip={{ content: cc.get_info().description }} value={cc}>{cc.get_info().name}</option>
                   {/each}
                 </select>
               </div>

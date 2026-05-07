@@ -1,49 +1,40 @@
-# Renix/Bendix ECU Diagnostic Framework
+# Renix/Bendix ECU Diagnostic Analyzer
 
-A C++ based diagnostic and reverse-engineering suite for Renault/Bendix Electronic Control Units. While specifically tuned for the **R19 (F3N-740) Single Point Injection (SPI)**, the project is an extensible framework for any ECU utilizing similar serial diagnostic frames.
+This software is written for my personal use, and is currently only supporting this one engine in my car and may also support others by displaying diag data as generic byte charts.  Its written in a way, that new models can be easily added in the future. The web-abb is already usable if you have data as a file.  The optional ESP32 firmware currently unfinished. Its mostly about tying things together now, which is still time consuming. 
 
-## Architecture & Extensibility
+## This project contains:
+  * A fast reactive web-app to run on your web-browser
+     *  hosted here on GitHub: [https://zwiebert.github.io/r19ana/](https://zwiebert.github.io/r19ana/)
+     *  to parse your local diagnostic data and show it as charts
+         * if you want to try it without having data, you can enable it to fetch sample data from this repository
+     *  to show live-data as charts (planned)
+     *  to get live-data via USB or Bluetooth (planned)
+  * An (optional) ESP32 firmware
+     *  to record diagnostic data to sd-card.
+     *  to stream live textual data to a bluetooth terminal
+     *  to host the web-app on its http server
+         *  to do the same things the stand-alone web-app does
+         *  to configure and control the ESP32 firmware (unfinished)
+         *  to show-live data over web-socket (planned)
+         *  to let the user download data from the sd-card via http (planned)
+  * Some command-line tools to convert data to text format and back to binary:
+     * To view the data as text for editing or feeding it to gnuplot
+     * To convert edited data back to (byte-stuffed) binary format
+  * Some gnuplot scripts, which are currently not maintained, since we now use the web-app with uplot.
+  * Some sample data in orignal binary format: [main/data](https://github.com/zwiebert/r19ana/tree/main/main/data)
 
-The project is designed with a modular, object-oriented architecture that separates the diagnostic logic from the data transmission. Adding support for a new ECU model is streamlined through a **base class interface** and **virtual member functions**.
+## Supported Car-Engines
 
-### Adding New Models
-To integrate a new vehicle or ECU variant:
-1.  **Duplicate** an existing model folder within the `/models` directory.
-2.  **Modify** the three core files (header, implementation, and index definitions) to match the new frame's structure.
-3.  **Register** the model by adding its specific `struct` to the global model table.
-
-This allows the same codebase to handle varied frame lengths, byte orders (Big/Little Endian), and scaling formulas without modifying the core logger or filter logic.
-
-## Operational Modes
-
-*   **`model_f3n_740`**: Fully mapped for the Bendix SPI (29-byte frame). Includes scaling for RPM, MAP, Injection, and signed adaptation offsets.
-*   **`model_experimental`**: An "Exploded View" that expands all flag bytes into individual signal lines (up to 90+ lines) for bit-level discovery.
-*   **`model_raw`**: A baseline mode providing the raw Hexadecimal data-frame in Line 1. Essential for capturing data from unknown models to establish a new mapping.
-
-## Data Analysis Workflow
-
-The tool is optimized for a **"Capture Once, Analyze Often"** workflow:
-*   **Raw Preservation**: Every log entry contains the full hex string. If a mapping is updated in the code, old logs can be re-piped to reveal new insights without re-driving the car.
-*   **Signed Normalization**: "Correction" values (Adaptations/Regulation) are centered at zero to clearly visualize the ECU's "effort" to maintain stoichiometry.
-*   **High-Speed Filtering**: The PC tool supports block-skipping and range-selection to keep Gnuplot performance high during long (15+ min) drive cycles.
-
-## Diagnostic Logic: The F3N-740 Case Study
-The framework identifies mechanical failures by monitoring logical "Floor" and "Ceiling" limits. A **Vacuum Leak** is confirmed in the data when:
-1.  **Idle Regulation (Byte 27)** hits its minimum "floor" of 10.
-2.  **Idle Richness Adaptation (Byte 26)** hits a "ceiling" (e.g., +92 / 220 raw) to compensate for unmetered air.
-3.  **Idle Switch (Flags0)** remains active while RPM "ripples" or "hunts."
-
----
-*Disclaimer: This is an open-source reverse-engineering project. Always cross-reference data with original Bendix/Renix Monopoint service manuals.*
+* Generic: plots each single bytes of the diagnostic data packet (length 30..64) as byte-value 
+* F3N-740: Engine in Renault 19 X53B  (54kW, gasoline, Renix-TBI, manual transmission), data-length:30-byte, 65000bps.
+* more to come, if I get some data... 
 
 
-----
-The following part of this Readme is human-written:
 
 ## Building the Software
 * the ESP32 firmware is an ESP-IDF project and should be build with "idf.py" the normal way from root folder.
 * the tools for converting from bin or hex to human/gnuplot-friendly output are build with cmake from main folder
-* the graphs are generated from the output of the tools or the firmware using some .gp files. these files handle the prefiltering using standard tools like grep and awk.
+* gnuplot graphs are generated from the output of the tools or the firmware using some .gp files. these files handle the prefiltering using standard tools like grep and awk.
 
 ## Using the Software
 * The ESP32 has to bei bluetooth-paired with the smart-phone or other devices which run the bluetooth terminal. Bluetooth Classic SPP is currently used.  BLE may be added later. You can switch models and filter output-lines interactively in the bluetooth-terminal app.
@@ -51,7 +42,7 @@ The following part of this Readme is human-written:
 * the gnuplot files can take the data from standard input. there are several options depending on the .gp file, for data-thinning (skip), range-selection (start, span, end). The .gp file for the "exp" model can take two line numbers (line_a, line_b) which will produce a diagram with 2 graphs.  the line number for the exp model are 1:1 the byte index in the frame (byte 0 is the program_version byte, the start bytes 0xff,0x00 are not counted). >t starts with line numer 2 and byte 2. the line number 1 is, like always the hex-string of the complete data frame.
   
 ## Building the Hardware
-* This is optional. The ESP32 is there to capture data from the diagnose port, format it into live view data which is then passed to a bluetooth terminal.
+* This is optional. The ESP32 is there to capture data from the diagnose port, format it into live view data which is then passed to a bluetooth terminal and/or save it onto sdcard in the original binary format.
 *  If you already have a means to capture the binary diagnose data sent from your ECU, then you can pipe this data to the gnuplot files by using the tool xr25-bin2human on your PC.
  
 ```

@@ -16,5 +16,11 @@
     "--compile-commands-dir=/home/bertw/proj/mcu/r19ana/build/projconf/esp32-nonet"
   ],
   "idf.flashType": "UART",
-  "idf.monitorPort": "/dev/ttyUSB0"
+  "idf.monitorPort": "/dev/ttyUSB0",
+  "cSpell.enabledLanguageIds": ["markdown", "plaintext"],
+  "cSpell.enabledFileTypes": {
+    "markdown": true
+  },
+  "cSpell.enabled": true,
+  "C_Cpp.errorSquiggles": "enabled"
 }

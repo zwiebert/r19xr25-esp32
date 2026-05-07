@@ -62,6 +62,6 @@ export class RenixDestuffer {
   private finalizePacket(): void {
     this.packetCount++;
     //this.onPacket(this.packetBuffer.slice(0, this.writeIndex - 1), this.packetCount);
-    this.onPacket(this.packetBuffer.subarray(0, this.writeIndex - 1), this.packetCount);
+    this.onPacket(this.packetBuffer.subarray(0, this.writeIndex), this.packetCount);
   }
 }

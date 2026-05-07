@@ -82,7 +82,7 @@
       const tt = cm2txt(cm);
       res.push(tt);
     }
-    console.log("toolTips", res);
+    //console.log("toolTips", res);
     return res;
   });
 
@@ -96,9 +96,7 @@
   function load_data(data: Uint8Array, name = "") {
     live_simulation(false);
     if (isHexContent(data)) {
-      console.log("hex-content detected");
       diag_data = hexToBinary(data);
-      console.log(diag_data);
     } else {
       diag_data = data;
     }
@@ -117,7 +115,6 @@
   function live_simulation(simu: boolean) {
     console.log("simu listener", simu);
     if (!simu && live_simu_running) {
-      console.log("turn simu off");
       live_simu = false;
       live = false;
       if (live_simu_running) {
@@ -144,11 +141,9 @@
   function generate_live_x_arr(count: number, step: number = 0.015): Float64Array {
     const start = Date.now() / 1000;
     const x = new Float64Array(count);
-    console.log("start xarray");
     for (let i = 0; i < count; i++) {
       x[i] = start + i * step;
     }
-    console.log("end xarray");
     return x;
   }
 
@@ -277,6 +272,45 @@
   <h3 class="w-screen mx-0 pointer-events-auto" use:tippy={{ content: diag_charts.tt.h3, allowHTML: true }}>{chart_index + 1} : {diag_data_name}</h3>
 {/snippet}
 
+{#snippet bit_chart(idx: number)}
+  <MyBitsPlot
+    chartData={[x_arr, yn_arr[idx]]}
+    chartDataVersions={[x_arr_version, yn_arr_version]}
+    labels={[x_labels, car_chart.labels[idx]]}
+    {syncKey}
+    {width}
+    {height}
+    is_live={live}
+    }
+  />
+{/snippet}
+
+{#snippet val_chart(i: number)}
+  <MyPlot
+    xData={x_arr}
+    xDataVer={x_arr_version}
+    yData={yn_arr[i]}
+    yDataVer={yn_arr_version}
+    y2Data={yn_arr[i + 1]}
+    y2DataVer={yn_arr_version}
+    labels={[x_labels, car_chart.labels[i], car_chart.labels[i + 1]]}
+    {syncKey}
+    {width}
+    {height}
+    is_live={live}
+    }
+  />
+{/snippet}
+
+{#snippet enable_chart(i: number)}
+  <label use:tooltip={{ content: "y1: " + toolTips[oIdx2cmi(i)] + "<br>y2: " + toolTips[oIdx2cmi(i + 1)], allowHTML: true }}
+    ><input type="checkbox" bind:checked={yn_show[i]} />{car_chart.labels[i]?.series_label}, {car_chart.labels[i + 1]?.series_label}</label
+  >
+  {#if car_chart.labels[i]?.axis_label === "bits" || car_chart.labels[i]?.axis_label === "raw"}
+    <label><input type="checkbox" bind:checked={yn_show_as_bits[i]} />bits</label>
+  {/if}
+{/snippet}
+
 <svelte:window bind:innerWidth={win_innerWidth} onresize={() => (width = window.innerWidth - 10)} />
 
 <!-- begin of experimental -->
@@ -302,7 +336,6 @@
           if (selectOrderIdx === 0) return;
           [car_chart.order[selectOrderIdx], car_chart.order[selectOrderIdx - 1]] = [car_chart.order[selectOrderIdx - 1], car_chart.order[selectOrderIdx]];
           --selectOrderIdx;
-          console.log("car_chart.order", car_chart.order);
         }}>move up</button
       >
       <button
@@ -311,13 +344,11 @@
           if (selectOrderIdx + 1 >= car_chart.order.length) return;
           [car_chart.order[selectOrderIdx], car_chart.order[selectOrderIdx + 1]] = [car_chart.order[selectOrderIdx + 1], car_chart.order[selectOrderIdx]];
           ++selectOrderIdx;
-          console.log("car_chart.order", car_chart.order);
         }}>move down</button
       >
       <button
         class=""
         onclick={() => {
-          console.log("push:", selectUnusedMetricsIdx);
           car_chart.order.push(selectUnusedMetricsIdx);
         }}>use this</button
       >
@@ -437,12 +468,7 @@
             <div class="flex flex-col text-left">
               {#each Array.from({ length: Math.floor(nmbGraphs / 2) }, (_, index) => index * 2) as i}
                 <div>
-                  <label use:tooltip={{ content: "y1: " + toolTips[oIdx2cmi(i)] + "<br>y2: " + toolTips[oIdx2cmi(i + 1)], allowHTML: true }}
-                    ><input type="checkbox" bind:checked={yn_show[i]} />{car_chart.labels[i]?.series_label}, {car_chart.labels[i + 1]?.series_label}</label
-                  >
-                  {#if car_chart.labels[i]?.axis_label === "bits" || car_chart.labels[i]?.axis_label === "raw"}
-                    <label><input type="checkbox" bind:checked={yn_show_as_bits[i]} />bits</label>
-                  {/if}
+                  {@render enable_chart(i)}
                 </div>
               {/each}
             </div>
@@ -458,41 +484,10 @@
           <div class="text-left">
             <div class="text-center" style="display:{yn_show[i] ? 'block' : 'none'};touch-action: pan-y; width: 100%;">
               {#if yn_show_as_bits[i] && (car_chart.labels[i]?.axis_label === "bits" || car_chart.labels[i]?.axis_label === "raw")}
-                <MyBitsPlot
-                  chartData={[x_arr, yn_arr[i]]}
-                  chartDataVersions={[x_arr_version, yn_arr_version]}
-                  labels={[x_labels, car_chart.labels[i]]}
-                  {syncKey}
-                  {width}
-                  {height}
-                  is_live={live}
-                  }
-                />
-                <MyBitsPlot
-                  chartData={[x_arr, yn_arr[i + 1]]}
-                  chartDataVersions={[x_arr_version, yn_arr_version]}
-                  labels={[x_labels, car_chart.labels[i + 1]]}
-                  {syncKey}
-                  {width}
-                  {height}
-                  is_live={live}
-                  }
-                />
+                {@render bit_chart(i)}
+                {@render bit_chart(i + 1)}
               {:else}
-                <MyPlot
-                  xData={x_arr}
-                  xDataVer={x_arr_version}
-                  yData={yn_arr[i]}
-                  yDataVer={yn_arr_version}
-                  y2Data={yn_arr[i + 1]}
-                  y2DataVer={yn_arr_version}
-                  labels={[x_labels, car_chart.labels[i], car_chart.labels[i + 1]]}
-                  {syncKey}
-                  {width}
-                  {height}
-                  is_live={live}
-                  }
-                />
+                {@render val_chart(i)}
               {/if}
             </div>
           </div>

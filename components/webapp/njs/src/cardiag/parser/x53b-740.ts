@@ -61,12 +61,15 @@ export class x53b_740_parser {
     /*
       MAP Formula:  byte * 3.1 + 220
       Measurements at 1007 mBar atmospheric pressure:
-      inHg-Vacuum / Byte-Value
-      0 / FE
-      5 / B2
-      10/ 85
-      15/ 55
-      20/ 20
+      inHg-Vacuum / Byte-Value hex:dec / mBar-absolute-Pressure
+        0 / FE:254 / 1007
+       -5 / B2:178 / 838
+      -10 / 85:133 / 668
+      -15 / 55:85 / 499
+      -20 / 20:32 / 329
+      
+      According to this formula, the MAP sensor range would
+      be 220 ... 1010 mBar, for byte values 00 ... FF.
     */
     return int(this.X(idx_t.MAP) * 3.1 + 220);
   }

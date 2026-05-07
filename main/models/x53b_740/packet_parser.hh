@@ -66,11 +66,7 @@ class X53b740Frame : public CarModelBase {
   // unknown indexes
   // 15, 17, 18, 19, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
   int get_manifold_absolute_pressure_mBar() const {
-#if OLD_FORMULAS
-    return int(X(idx_t::MAP) * 3.697f + 103.0f);
-#else
-    return int(X(idx_t::MAP) * 4);
-#endif
+    return int(X(idx_t::MAP) * 3.1f + 220.0f);
   }
   int get_engine_coolant_temperature_Celsius() const {
     return int(X(idx_t::ECT) * 0.625f - 40.0f);

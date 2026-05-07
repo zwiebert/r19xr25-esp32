@@ -45,7 +45,7 @@ export class raw_chart implements Icar_chart {
 
   process_data_packet(arr: Uint8Array, ct: number) {
     if (!this.yn_arr) return;
-    this.nmbGraphs = arr.length;
+    this.nmbGraphs =  arr.length;
     const m = new raw_parser(arr);
     let idx = 0;
     for (let g = 0; g < this.nmbGraphs; ++g) {

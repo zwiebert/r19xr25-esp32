@@ -16,8 +16,16 @@
 # Log files
 *.log
 
+#trash
+trash/
+**/trash/
+
+**/node_modules/
+
 # Build artifacts and directories
 **/build/
+**/dist/
+**/dist-gh/
 build/
 *.o
 *.a

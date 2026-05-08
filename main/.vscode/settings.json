@@ -1,0 +1,5 @@
+{
+    "cmake.buildTask": true,
+    "cmake.revealLog": "always",
+    "cmake.showRunningTasks": true
+}

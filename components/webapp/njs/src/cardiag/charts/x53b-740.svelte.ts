@@ -52,6 +52,7 @@ export class x53b_740_chart implements Icar_chart {
   private yn_all_arr: (number | boolean)[][] = $state.raw(Array.from({ length: t.length }, () => []));
   public order = $state(default_order);
   public nmbGraphs: number = $derived(this.order.length);
+  public packets_per_sec = $state(41);
 
   public labels = $derived.by(() => {
     const len = this.order.length;

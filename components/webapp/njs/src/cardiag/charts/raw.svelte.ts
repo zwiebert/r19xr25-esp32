@@ -14,6 +14,7 @@ export class raw_chart implements Icar_chart {
   public nmbGraphs: number = $state(20);
   public labels = $derived(labels.slice(0, this.nmbGraphs));
   public order = $derived([...Array(this.nmbGraphs).keys()]);
+  public packets_per_sec = $state(41);
 
   private yn_arr: (number | boolean)[][] = Array.from({ length: 64 }, () => []);
   static get_info() {

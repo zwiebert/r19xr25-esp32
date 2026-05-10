@@ -11,6 +11,7 @@ export interface Icar_chart {
   nmbGraphs: number;
   order: number[];
   labels: ILabel[];
+  packets_per_sec: number;
   clear_chart_data(): void;
   get_chart_data(): (number | boolean)[][];
   get_labels: () => ILabel[];
@@ -27,7 +28,7 @@ export interface Icar_chart {
 }
 
 export interface Icar_chart_static {
-  new(): Icar_chart;
+  new (): Icar_chart;
   get_info(): IModelInfo;
 }
 

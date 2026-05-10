@@ -276,6 +276,7 @@
     chartData={[x_arr, yn_arr[idx]]}
     chartDataVersions={[x_arr_version, yn_arr_version]}
     labels={[x_labels, car_chart.labels[idx]]}
+    packets_per_sec={car_chart.packets_per_sec}
     {syncKey}
     {width}
     {height}
@@ -293,6 +294,7 @@
     y2Data={yn_arr[i + 1]}
     y2DataVer={yn_arr_version}
     labels={[x_labels, car_chart.labels[i], car_chart.labels[i + 1]]}
+    packets_per_sec={car_chart.packets_per_sec}
     {syncKey}
     {width}
     {height}

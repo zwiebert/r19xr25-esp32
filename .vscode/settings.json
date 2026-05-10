@@ -13,11 +13,14 @@
   "clangd.arguments": [
     "--background-index",
     "--query-driver=**",
-    "--compile-commands-dir=/home/bertw/proj/mcu/r19ana/build/projconf/esp32-nonet"
+    "--compile-commands-dir=/home/bertw/proj/mcu/r19ana/build/projconf/esp32-debug"
   ],
   "idf.flashType": "UART",
   "idf.monitorPort": "/dev/ttyUSB0",
-  "cSpell.enabledLanguageIds": ["markdown", "plaintext"],
+  "cSpell.enabledLanguageIds": [
+    "markdown",
+    "plaintext"
+  ],
   "cSpell.enabledFileTypes": {
     "markdown": true
   },

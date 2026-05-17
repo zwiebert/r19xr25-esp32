@@ -1,3 +1,11 @@
+if(NOT UNIT_TESTING)
+
+set(PACKAGE_JSON "${CMAKE_CURRENT_SOURCE_DIR}/njs/package.json")
+set(PACKAGE_LOCK "${CMAKE_CURRENT_SOURCE_DIR}/njs/package-lock.json")
+set(NPM_NODE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/njs/node_modules")
+
+
+
 # The files Vite is expected to produce
 set(UC_NAMES "wapp.html" "wapp.css" "wapp.js" "wapp.js.map")
 set(GZ_NAMES "wapp.html.gz" "wapp.css.gz" "wapp.js.gz" "wapp.js.map.gz")
@@ -13,6 +21,17 @@ list(TRANSFORM C_PATHS APPEND ".c")
 
 
 if(NOT CMAKE_BUILD_EARLY_EXPANSION)
+
+add_custom_command(
+    OUTPUT "${NPM_NODE_MODULES}"
+    COMMAND npm install
+    COMMAND ${CMAKE_COMMAND} -E touch "${NPM_NODE_MODULES}"
+    DEPENDS "${PACKAGE_JSON}" "${PACKAGE_LOCK}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/njs"
+    COMMENT "Checking and installing npm dependencies..."
+    VERBATIM
+)
+
 # 1. Watch all your source files recursively
 file(GLOB_RECURSE WEB_SOURCES
      CONFIGURE_DEPENDS 
@@ -21,7 +40,7 @@ file(GLOB_RECURSE WEB_SOURCES
 add_custom_command(
     OUTPUT ${GZBR_PATHS}
     COMMAND ${CMAKE_COMMAND} -E env "BUILD_DIR=${CMAKE_CURRENT_BINARY_DIR}" npm run build
-    DEPENDS ${WEB_SOURCES} #"${COMPONENT_DIR}/force.h" 
+    DEPENDS "${NPM_NODE_MODULES}" ${WEB_SOURCES}
     WORKING_DIRECTORY "${COMPONENT_DIR}/njs" # Where your package.json is
     COMMENT "Running Vite build..."
     VERBATIM
@@ -38,10 +57,12 @@ endif()
 if(ESP_PLATFORM) 
  idf_component_register(
     SRCS ${C_PATHS}
+    INCLUDE_DIRS ./include
 )
 else()
     # build static library containing vite bundles in different formats (uncompressed, .gz, .br)
     add_library(webapp_lib STATIC ${C_PATHS})
     add_custom_target(webapp_gen_target DEPENDS ${C_PATHS})
     add_dependencies(webapp_lib webapp_gen_target)
+endif()
 endif()

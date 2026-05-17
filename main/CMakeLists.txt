@@ -22,7 +22,7 @@ list(APPEND srcs_host ${srcs})
 if(COMMAND idf_component_register)
 idf_component_register(SRCS  ${srcs_esp32}
                     REQUIRES bt nvs_flash vfs esp_driver_uart esp_driver_gpio pthread fatfs sdmmc sd_card
-                             net net_http_server
+                             net net_http_server utils_misc
                     EMBED_FILES data/r19data.bin
                     INCLUDE_DIRS "." ".." "esp32")
 

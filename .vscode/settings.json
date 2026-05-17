@@ -5,7 +5,7 @@
     "target/esp32.cfg"
   ],
   "idf.port": "/dev/ttyUSB0",
-  "idf.currentSetup": "/home/bertw/.espressif/v6.0/esp-idf",
+  "idf.currentSetup": "/home/bertw/.espressif/v6.0.1/esp-idf",
   "idf.customExtraVars": {
     "IDF_TARGET": "esp32"
   },
@@ -13,7 +13,7 @@
   "clangd.arguments": [
     "--background-index",
     "--query-driver=**",
-    "--compile-commands-dir=/home/bertw/proj/mcu/r19ana/build/projconf/esp32-debug"
+    "--compile-commands-dir=/home/bertw/proj/mcu/r19ana/build/projconf/esp32-nonet"
   ],
   "idf.flashType": "UART",
   "idf.monitorPort": "/dev/ttyUSB0",

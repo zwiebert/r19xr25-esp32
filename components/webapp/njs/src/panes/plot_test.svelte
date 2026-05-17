@@ -18,7 +18,7 @@
     height: number;
     is_live: boolean;
     use_time: boolean;
-    blocks_per_second: number;
+    packets_per_sec: number;
   }
   // Props or state
   const {
@@ -34,7 +34,7 @@
     height = 30,
     is_live = false,
     use_time = false,
-    blocks_per_second = 41,
+    packets_per_sec = 41,
   }: Iprops = $props();
 
   let chart;
@@ -70,7 +70,7 @@
           value: !use_time
             ? (u, v) => {
                 if (v == null) return "-";
-                const s = v / blocks_per_second;
+                const s = v / packets_per_sec;
                 const min = Math.floor(s / 60)
                   .toString()
                   .padStart(2, "0");

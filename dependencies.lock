@@ -51,7 +51,7 @@ dependencies:
   idf:
     source:
       type: idf
-    version: 6.0.0
+    version: 6.0.1
 direct_dependencies:
 - espressif/ip101
 - espressif/lan87xx
@@ -60,4 +60,4 @@ direct_dependencies:
 - idf
 manifest_hash: 12d4cb16f392ab406b296efd518976da2a452f7657e61c550b6119629457c789
 target: esp32
-version: 3.0.0
+version: 2.0.0

@@ -20,7 +20,7 @@ enum idx_t {
   status1, // static 0x88  (bit-5: Closed Loop Readiness (Condition Correction Lambda)!!!)
   status2, // Flags2	Idle Control	Low-bit jitter (stepper), //
   // high-bit spike at end.
-  status3, // Enrichment/Purge,	Wakes-up at warm engine, heavy //
+  status3, // 7=O2-rich-lean, 6=O2-regu-enabled, Enrichment/Purge,	Wakes-up at warm engine, heavy //
   // spiking/toggling.
   status4, // static 0x00  Error memory   (rich/lean signal at bit-0 !!!)
   status5, // static 0x0a
@@ -182,9 +182,13 @@ export class x53b_740_parser {
   is_fuel_pump_on() {
     return getbit(this.X(idx_t.status6), 4);
   }
+
   is_oxygen_sensor_loop_closed() {
-    return getbit(this.X(idx_t.status2), 5);
-  } // plot-verified
+    return getbit(this.X(idx_t.status3), 6);
+  }
+  is_oxygen_sensor_rich() {
+    return getbit(this.X(idx_t.status3), 7);
+  }
   is_vacuum_provided_to_egr_valve() {
     return getbit(this.X(idx_t.status3), 5);
   }
@@ -221,6 +225,8 @@ export enum x53b_740_metrics_table_pos {
   status5,
   status6,
   status7,
+  is_o2_closed_loop,
+  is_o2_rich,
   COUNT,
 }
 
@@ -266,11 +272,13 @@ export const x53b_740_metrics_table: Array<CarMetrics> = [
   { k: 0, parse: P.get_status0, name: "status byte 0: input switches (idle, wot)", unit: "bits", range: [0, 255], short_name: "sb0" },
   { k: 0, parse: P.get_status1, name: "status byte 1: ", unit: "bits", range: [0, 255], short_name: "sb1" },
   { k: 0, parse: P.get_status2, name: "status byte 2: Idle control?", unit: "bits", range: [0, 255], short_name: "sb2" },
-  { k: 0, parse: P.get_status3, name: "status byte 3: enrichment/purge/egr?", unit: "bits", range: [0, 255], short_name: "sb3" },
+  { k: 0, parse: P.get_status3, name: "status byte 3: O2, enrichment/purge/egr?", unit: "bits", range: [0, 255], short_name: "sb3" },
   { k: 0, parse: P.get_status4, name: "status byte 4: error?, rich-lean at 0?", unit: "bits", range: [0, 255], short_name: "sb4" },
   { k: 0, parse: P.get_status5, name: "status byte 5: ", unit: "bits", range: [0, 255], short_name: "sb5" },
   { k: 0, parse: P.get_status6, name: "status byte 6 fuel-pump: ", unit: "bits", range: [0, 255], short_name: "sb6" },
   { k: 0, parse: P.get_status7, name: "status byte 7: ", unit: "bits", range: [0, 255], short_name: "sb7" },
+  { k: 0, parse: P.is_oxygen_sensor_loop_closed, name: "O2 sensor, in closed loop", unit: "boolean", range: [0, 1], short_name: "O2-Loop" },
+  { k: 0, parse: P.is_oxygen_sensor_rich, name: "O2 sensor, is rich", unit: "boolean", range: [0, 1], short_name: "O2-rich" },
 ];
 /* eslint-enable @typescript-eslint/unbound-method */
 export default x53b_740_parser;

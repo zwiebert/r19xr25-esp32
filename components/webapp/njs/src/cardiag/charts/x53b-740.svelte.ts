@@ -9,28 +9,28 @@ const default_order = [
   e.idle_switch,
 
   e.map_sensor,
-  e.unknown_xx,
+  e.fuel_pump_relay,
 
   e.ignition_advance,
   e.full_load_switch,
 
-  e.o2_sensor,
-  e.fuel_pump_relay,
-
   e.injection_duration,
   e.batt_voltage,
+
+  e.o2_sensor,
+  e.is_o2_closed_loop,
+
+  e.richness_regulation,
+  e.is_o2_rich,
+
+  e.richness_adaption_idle2low,
+  e.richness_adaption_avg2high,
 
   e.ect_sensor,
   e.iat_sensor,
 
   e.engine_pinking,
   e.detonation_correction,
-
-  e.richness_regulation,
-  e.unknown_x,
-
-  e.richness_adaption_idle2low,
-  e.richness_adaption_avg2high,
 
   e.idle_regulation,
   e.idle_adaption,
@@ -46,6 +46,10 @@ const default_order = [
 
   e.status6,
   e.status7,
+
+  e.unknown_x,
+  e.unknown_xx,
+
 ];
 
 export class x53b_740_chart implements Icar_chart {
